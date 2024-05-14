@@ -1,0 +1,79 @@
+From af5b7744a80f8527bea1a1cc67cef68c6dee8769 Mon Sep 17 00:00:00 2001
+From: ayushmp10 <ayushparambath@gmail.com>
+Date: Mon, 13 May 2024 15:37:36 -0400
+Subject: [PATCH] Completed Task 1 - Created interface with stock price data
+ feed
+
+---
+ .idea/forage-jpmc-swe-task-1-1.iml |  2 +-
+ .idea/misc.xml                     |  5 ++++-
+ client3.py                         | 11 ++++++++---
+ 3 files changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/.idea/forage-jpmc-swe-task-1-1.iml b/.idea/forage-jpmc-swe-task-1-1.iml
+index 74d515a..bd8dede 100644
+--- a/.idea/forage-jpmc-swe-task-1-1.iml
++++ b/.idea/forage-jpmc-swe-task-1-1.iml
+@@ -4,7 +4,7 @@
+     <content url="file://$MODULE_DIR$">
+       <excludeFolder url="file://$MODULE_DIR$/venv" />
+     </content>
+-    <orderEntry type="inheritedJdk" />
++    <orderEntry type="jdk" jdkName="Python 3.12 (forage-jpmc-swe-task-1)" jdkType="Python SDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+   </component>
+ </module>
+\ No newline at end of file
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+index b4029cb..ff86b81 100644
+--- a/.idea/misc.xml
++++ b/.idea/misc.xml
+@@ -1,4 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (forage-jpmc-swe-task-1-1)" project-jdk-type="Python SDK" />
++  <component name="Black">
++    <option name="sdkName" value="Python 3.12 (forage-jpmc-swe-task-1)" />
++  </component>
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (forage-jpmc-swe-task-1)" project-jdk-type="Python SDK" />
+ </project>
+\ No newline at end of file
+diff --git a/client3.py b/client3.py
+index 3fc09b7..6c533b5 100644
+--- a/client3.py
++++ b/client3.py
+@@ -35,14 +35,17 @@ def getDataPoint(quote):
+     stock = quote['stock']
+     bid_price = float(quote['top_bid']['price'])
+     ask_price = float(quote['top_ask']['price'])
+-    price = bid_price
++    price = (bid_price + ask_price)/2
+     return stock, bid_price, ask_price, price
+ 
+ 
+ def getRatio(price_a, price_b):
+     """ Get ratio of price_a and price_b """
+     """ ------------- Update this function ------------- """
+-    return 1
++    if (price_b == 0):
++        # when price_b is 0 avoid throwing ZeroDivisionError
++        return
++    return price_a / price_b
+ 
+ 
+ # Main
+@@ -52,8 +55,10 @@ if __name__ == "__main__":
+         quotes = json.loads(urllib.request.urlopen(QUERY.format(random.random())).read())
+ 
+         """ ----------- Update to get the ratio --------------- """
++        prices = {}
+         for quote in quotes:
+             stock, bid_price, ask_price, price = getDataPoint(quote)
++            prices[stock] = price
+             print("Quoted %s at (bid:%s, ask:%s, price:%s)" % (stock, bid_price, ask_price, price))
+ 
+-        print("Ratio %s" % getRatio(price, price))
++        print("Ratio %s" % getRatio(prices["ABC"], prices["DEF"]))
+-- 
+2.43.0.windows.1
+
